@@ -87,3 +87,44 @@ def get_stats(db: Session):
         "completed_events": db.query(models.Event).filter(models.Event.status == "completed").count(),
         "messages_count": db.query(models.ContactMessage).count()
     }
+
+# --- Event Registrations ---
+def get_event_registrations(db: Session):
+    """Get all events with their registered volunteers"""
+    events = db.query(models.Event).all()
+    result = []
+    
+    for event in events:
+        # Get all registrations for this event
+        registrations = db.query(models.Registration).filter(
+            models.Registration.event_id == event.id
+        ).all()
+        
+        volunteers = []
+        for reg in registrations:
+            user = db.query(models.User).filter(models.User.id == reg.user_id).first()
+            if user:
+                volunteers.append({
+                    "id": user.id,
+                    "full_name": user.full_name,
+                    "email": user.email,
+                    "phone": user.phone,
+                    "registration_date": reg.registration_date,
+                    "status": reg.status
+                })
+        
+        result.append({
+            "id": event.id,
+            "title": event.title,
+            "description": event.description,
+            "location": event.location,
+            "event_date": event.event_date,
+            "start_time": event.start_time,
+            "end_time": event.end_time,
+            "status": event.status,
+            "volunteer_count": len(volunteers),
+            "volunteers": volunteers
+        })
+    
+    return result
+

@@ -28,3 +28,10 @@ def get_messages(current_user: models.User = Depends(dependencies.get_current_us
     if current_user.role != "admin":
          raise HTTPException(status_code=403, detail="Not authorized")
     return crud.get_contact_messages(db)
+
+@router.get("/event-registrations", response_model=List[schemas.EventWithRegistrations])
+def get_event_registrations(current_user: models.User = Depends(dependencies.get_current_user), db: Session = Depends(dependencies.get_db)):
+    if current_user.role != "admin":
+         raise HTTPException(status_code=403, detail="Not authorized")
+    return crud.get_event_registrations(db)
+

@@ -18,3 +18,32 @@ class RegistrationResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+# New schema for volunteer details in registration
+class VolunteerDetails(BaseModel):
+    id: int
+    full_name: str
+    email: str
+    phone: str
+    registration_date: datetime
+    status: str
+    
+    class Config:
+        from_attributes = True
+
+# New schema for event with registrations
+class EventWithRegistrations(BaseModel):
+    id: int
+    title: str
+    description: str
+    location: str
+    event_date: str
+    start_time: str
+    end_time: str
+    status: str
+    volunteer_count: int
+    volunteers: list[VolunteerDetails]
+    
+    class Config:
+        from_attributes = True
+
